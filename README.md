@@ -10,7 +10,12 @@ to `Nokogiri::XML::Document`.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+First you have to install the xmlsec headers, in a
+debian/ubuntu system is like this:
+
+    sudo apt-get install libxmlsec1-dev
+
+Then, add this line to your application's Gemfile:
 
     gem 'nokogiri-xmlsec'
 
