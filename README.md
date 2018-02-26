@@ -10,6 +10,10 @@ to `Nokogiri::XML::Document`.
 
 ## Installation
 
+Install this before attempting to install; or else it may fail (tested on CentOS 7) while trying to find -lltdl from the xmlsec1-openssl lib. I'm guessing it's a dependency. Someone else may know more.
+    
+    yum install libtool-ltdl-devel
+
 Add this line to your application's Gemfile:
 
     gem 'nokogiri-xmlsec'
