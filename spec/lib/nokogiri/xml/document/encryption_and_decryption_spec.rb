@@ -42,4 +42,14 @@ describe "encryption and decryption:" do
     encrypted_data.decrypt_with(key: fixture('rsa.pem'))
     expect(doc.to_s).to eq original
   end
+
+  it "inserts a certificate" do
+    doc = subject
+    doc.encrypt!(key: fixture('cert/server.key.decrypted'),
+                 cert: fixture('cert/server.crt'),
+                 block_encryption: 'aes128-cbc',
+                 key_transport: 'rsa-1_5')
+    expect(doc.to_s).to match(/X509Data/)
+    expect(doc.to_s).not_to match(/X509Data></)
+  end
 end

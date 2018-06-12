@@ -12,6 +12,7 @@
 VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
                        VALUE rb_opts) {
   VALUE rb_exception_result = Qnil;
+  VALUE rb_cert = Qnil;
   const char* exception_message = NULL;
 
   xmlDocPtr doc = NULL;
@@ -23,7 +24,9 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
   xmlSecKeysMngrPtr keyManager = NULL;
   char *keyName = NULL;
   char *key = NULL;
+  char *certificate = NULL;
   unsigned int keyLength = 0;
+  unsigned int certificateLength = 0;
 
   resetXmlSecError();
 
@@ -35,6 +38,13 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
   if (rb_rsa_key_name != Qnil) {
     Check_Type(rb_rsa_key_name, T_STRING);
     keyName = StringValueCStr(rb_rsa_key_name);
+  }
+
+  rb_cert = rb_hash_aref(rb_opts, ID2SYM(rb_intern("cert")));
+  if (!NIL_P(rb_cert)) {
+    Check_Type(rb_cert, T_STRING);
+    certificate = RSTRING_PTR(rb_cert);
+    certificateLength = RSTRING_LEN(rb_cert);
   }
 
   XmlEncOptions options;
@@ -72,6 +82,15 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
     goto done;
   }
 
+  if(certificate) {
+    // add <dsig:X509Data/>
+    if(xmlSecTmplKeyInfoAddX509Data(keyInfoNode) == NULL) {
+      rb_exception_result = rb_eSigningError;
+      exception_message = "failed to add X509Data node";
+      goto done;
+    }
+  }
+
   if(keyName != NULL) {
     if(xmlSecTmplKeyInfoAddKeyName(keyInfoNode, NULL) == NULL) {
       rb_exception_result = rb_eEncryptionError;
@@ -104,6 +123,18 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
     rb_exception_result = rb_eDecryptionError;
     exception_message = "failed to generate session key";
     goto done;
+  }
+
+  if(certificate) {
+    // load certificate and add to the key
+    if(xmlSecCryptoAppKeyCertLoadMemory(encCtx->encKey,
+                                        (xmlSecByte *)certificate,
+                                        certificateLength,
+                                        xmlSecKeyDataFormatPem) < 0) {
+      rb_exception_result = rb_eSigningError;
+      exception_message = "failed to load certificate";
+      goto done;
+    }
   }
 
   // Set key name.
