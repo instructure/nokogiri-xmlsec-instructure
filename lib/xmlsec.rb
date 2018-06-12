@@ -61,12 +61,8 @@ class Nokogiri::XML::Document
   #     # encrypt with a public key and optional key name
   #     doc.encrypt! key: 'public-key', name: 'name'
   #
-  def encrypt! opts
-    if opts[:key]
-      encrypt_with_key opts[:name].to_s, opts[:key], opts.select { |key, _| key != :key && key != :name }
-    else
-      raise "public :key is required for encryption"
-    end
+  def encrypt!(key:, name: nil, **opts)
+    root.encrypt_with(key: key, name: name, **opts)
     self
   end
 
@@ -89,6 +85,11 @@ class Nokogiri::XML::Document
 end
 
 class Nokogiri::XML::Node
+  def encrypt_with(key:, name: nil, **opts)
+    raise ArgumentError("public :key is required for encryption") unless key
+    encrypt_with_key(name, key, opts)
+  end
+
   def decrypt_with(opts)
     raise 'inadequate options specified for decryption' unless opts[:key]
 

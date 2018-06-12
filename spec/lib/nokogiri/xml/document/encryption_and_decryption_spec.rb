@@ -31,4 +31,15 @@ describe "encryption and decryption:" do
     end
   end
 
+  it "encrypts a single element" do
+    doc = subject
+    original = doc.to_s
+    node = doc.at_xpath('env:Envelope/env:Data', 'env' => 'urn:envelope')
+    node.encrypt_with(key: fixture('rsa.pub'), block_encryption: 'aes128-cbc', key_transport: 'rsa-1_5')
+    expect(doc.root.name).to eq 'Envelope'
+    expect(doc.root.element_children.first.name).to eq 'EncryptedData'
+    encrypted_data = doc.root.element_children.first
+    encrypted_data.decrypt_with(key: fixture('rsa.pem'))
+    expect(doc.to_s).to eq original
+  end
 end

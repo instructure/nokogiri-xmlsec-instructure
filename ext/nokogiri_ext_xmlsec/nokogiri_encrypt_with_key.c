@@ -15,6 +15,7 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
   const char* exception_message = NULL;
 
   xmlDocPtr doc = NULL;
+  xmlNodePtr node = NULL;
   xmlNodePtr encDataNode = NULL;
   xmlNodePtr encKeyNode  = NULL;
   xmlNodePtr keyInfoNode = NULL;
@@ -27,12 +28,14 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
   resetXmlSecError();
 
   Check_Type(rb_rsa_key,      T_STRING);
-  Check_Type(rb_rsa_key_name, T_STRING);
   Check_Type(rb_opts, T_HASH);
 
   key       = RSTRING_PTR(rb_rsa_key);
   keyLength = RSTRING_LEN(rb_rsa_key);
-  keyName = StringValueCStr(rb_rsa_key_name);
+  if (rb_rsa_key_name != Qnil) {
+    Check_Type(rb_rsa_key_name, T_STRING);
+    keyName = StringValueCStr(rb_rsa_key_name);
+  }
 
   XmlEncOptions options;
   if (!GetXmlEncOptions(rb_opts, &options, &rb_exception_result,
@@ -40,7 +43,8 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
     goto done;
   }
 
-  Data_Get_Struct(self, xmlDoc, doc);
+  Data_Get_Struct(self, xmlNode, node);
+  doc = node->doc;
 
   // create encryption template to encrypt XML file and replace 
   // its content with encryption result
@@ -68,10 +72,12 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
     goto done;
   }
 
-  if(xmlSecTmplKeyInfoAddKeyName(keyInfoNode, NULL) == NULL) {
-    rb_exception_result = rb_eEncryptionError;
-    exception_message = "failed to add key name";
-    goto done;
+  if(keyName != NULL) {
+    if(xmlSecTmplKeyInfoAddKeyName(keyInfoNode, NULL) == NULL) {
+      rb_exception_result = rb_eEncryptionError;
+      exception_message = "failed to add key name";
+      goto done;
+    }
   }
 
   if ((keyManager = createKeyManagerWithSingleKey(
@@ -101,10 +107,12 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
   }
 
   // Set key name.
-  if(xmlSecKeySetName(encCtx->encKey, (xmlSecByte *)keyName) < 0) {
-    rb_exception_result = rb_eEncryptionError;
-    exception_message = "failed to set key name";
-    goto done;
+  if(keyName) {
+    if(xmlSecKeySetName(encCtx->encKey, (xmlSecByte *)keyName) < 0) {
+      rb_exception_result = rb_eEncryptionError;
+      exception_message = "failed to set key name";
+      goto done;
+    }
   }
 
   // Add <enc:EncryptedKey/> node to the <dsig:KeyInfo/> tag to include
@@ -127,7 +135,7 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
   }
 
   // encrypt the data
-  if(xmlSecEncCtxXmlEncrypt(encCtx, encDataNode, xmlDocGetRootElement(doc)) < 0) {
+  if(xmlSecEncCtxXmlEncrypt(encCtx, encDataNode, node) < 0) {
     rb_exception_result = rb_eEncryptionError;
     exception_message = "encryption failed";
     goto done;

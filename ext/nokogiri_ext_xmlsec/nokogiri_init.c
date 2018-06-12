@@ -17,7 +17,7 @@ void Init_Nokogiri_ext() {
 
   rb_define_method(rb_cNokogiri_XML_Node,     "sign!",            sign, 1);
   rb_define_method(rb_cNokogiri_XML_Node,     "verify_with",      verify_with, 1);
-  rb_define_method(rb_cNokogiri_XML_Document, "encrypt_with_key", encrypt_with_key, 3);
+  rb_define_method(rb_cNokogiri_XML_Node,     "encrypt_with_key", encrypt_with_key, 3);
   rb_define_method(rb_cNokogiri_XML_Node,     "decrypt_with_key", decrypt_with_key, 2);
   rb_define_method(rb_cNokogiri_XML_Document, "get_id",           get_id, 1);
   rb_define_method(rb_cNokogiri_XML_Node,     "set_id_attribute", set_id_attribute, 1);
