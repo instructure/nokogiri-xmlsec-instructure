@@ -28,7 +28,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.extensions = %w{ext/nokogiri_ext_xmlsec/extconf.rb}
 
-  spec.add_dependency 'nokogiri'
+  # Pinning this fixes issues like https://github.com/instructure/canvas-lms/issues/1362
+  spec.add_dependency 'nokogiri', '1.10.10'
   
   spec.add_development_dependency "bundler", "~> 2.1"
   spec.add_development_dependency "byebug"
