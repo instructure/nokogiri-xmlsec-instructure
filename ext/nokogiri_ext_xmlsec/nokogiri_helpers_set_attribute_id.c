@@ -2,7 +2,7 @@
 #include "util.h"
 
 // declaration from Nokogiri proper
-VALUE Nokogiri_wrap_xml_node(VALUE klass, xmlNodePtr node) ;
+VALUE noko_xml_node_wrap(VALUE klass, xmlNodePtr node) ;
 
 VALUE set_id_attribute(VALUE self, VALUE rb_attr_name) {
   VALUE rb_exception_result = Qnil;
@@ -14,7 +14,7 @@ VALUE set_id_attribute(VALUE self, VALUE rb_attr_name) {
   xmlChar *name = NULL;
   char *idName = NULL;
   char *exception_attribute_arg = NULL;
-  
+
   resetXmlSecError();
 
   Data_Get_Struct(self, xmlNode, node);
@@ -28,7 +28,7 @@ VALUE set_id_attribute(VALUE self, VALUE rb_attr_name) {
     exception_message = "Can't find attribute to add register as id";
     goto done;
   }
-  
+
   // get the attribute (id) value
   name = xmlNodeListGetString(node->doc, attr->children, 1);
   if(name == NULL) {
@@ -37,7 +37,7 @@ VALUE set_id_attribute(VALUE self, VALUE rb_attr_name) {
     exception_attribute_arg = idName;
     goto done;
   }
-  
+
   // check that we don't have that id already registered
   tmp = xmlGetID(node->doc, name);
   if(tmp != NULL) {
@@ -46,7 +46,7 @@ VALUE set_id_attribute(VALUE self, VALUE rb_attr_name) {
     exception_attribute_arg = idName;
     goto done;
   }
-  
+
   // finally register id
   xmlAddID(NULL, node->doc, name, attr);
 
@@ -89,7 +89,7 @@ VALUE get_id(VALUE self, VALUE rb_id)
   Data_Get_Struct(self, xmlDoc, doc);
   prop = xmlGetID(doc, (const xmlChar *)StringValueCStr(rb_id));
   if (prop) {
-    return Nokogiri_wrap_xml_node(Qnil, (xmlNodePtr)prop);
+    return noko_xml_node_wrap(Qnil, (xmlNodePtr)prop);
   } else {
     return Qnil;
   }
