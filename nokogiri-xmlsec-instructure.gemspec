@@ -28,8 +28,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.extensions = %w{ext/nokogiri_ext_xmlsec/extconf.rb}
 
-  spec.add_dependency 'nokogiri'
-  
+  spec.add_dependency 'nokogiri', '>= 1.11.2'
+
   spec.add_development_dependency "bundler", "~> 2.1"
   spec.add_development_dependency "byebug"
   spec.add_development_dependency "rake"

@@ -4,7 +4,7 @@
 // technically we should include nokogiri.h, but we don't know
 // how to find it. we _know_ this function will exist at runtime
 // though, so just declare it here
-void nokogiri_root_node(xmlNodePtr);
+void noko_xml_document_pin_node(xmlNodePtr);
 
 VALUE decrypt_with_key(VALUE self, VALUE rb_key_name, VALUE rb_key) {
   VALUE rb_exception_result = Qnil;
@@ -63,7 +63,7 @@ done:
     // the replaced node is orphaned, but not freed; let Nokogiri
     // own it now
     if(encCtx->replacedNodeList != NULL) {
-      nokogiri_root_node(encCtx->replacedNodeList);
+      noko_xml_document_pin_node(encCtx->replacedNodeList);
       // no really, please don't free it
       encCtx->replacedNodeList = NULL;
     }
