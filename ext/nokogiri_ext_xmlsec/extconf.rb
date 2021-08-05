@@ -7,7 +7,7 @@ end
 barf unless have_header('ruby.h')
 
 pkg_config('xmlsec1')
-$CFLAGS << " " + `xmlsec1-config  --cflags`.strip
+$CFLAGS << " " + `bash xmlsec1-config  --cflags`.strip
 $CFLAGS << " -fvisibility=hidden"
 
 if $CFLAGS =~ /\-DXMLSEC_CRYPTO=\\\\\\"openssl\\\\\\"/
@@ -23,5 +23,5 @@ puts "Ensure we escaping: #{$CFLAGS}"
 end
 
 puts "Clfags: #{$CFLAGS}"
-$libs = `xmlsec1-config  --libs`.strip
+$libs = `bash xmlsec1-config  --libs`.strip
 create_makefile('nokogiri_ext_xmlsec')
