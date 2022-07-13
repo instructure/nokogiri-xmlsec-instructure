@@ -53,10 +53,10 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
     goto done;
   }
 
-  Data_Get_Struct(self, xmlNode, node);
+  Noko_Node_Get_Struct_Struct(self, xmlNode, node);
   doc = node->doc;
 
-  // create encryption template to encrypt XML file and replace 
+  // create encryption template to encrypt XML file and replace
   // its content with encryption result
   encDataNode = xmlSecTmplEncDataCreate(doc, options.block_encryption, NULL,
                                         xmlSecTypeEncElement, NULL, NULL);
@@ -171,7 +171,7 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
     exception_message = "encryption failed";
     goto done;
   }
-  
+
   // the template is inserted in the doc, so don't free it
   encDataNode = NULL;
   encKeyNode = NULL;

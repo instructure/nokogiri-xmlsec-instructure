@@ -146,7 +146,7 @@ VALUE verify_with(VALUE self, VALUE rb_opts) {
   resetXmlSecError();
 
   Check_Type(rb_opts, T_HASH);
-  Data_Get_Struct(self, xmlNode, node);
+  Noko_Node_Get_Struct_Struct(self, xmlNode, node);
 
   // verify start node
   if(!xmlSecCheckNodeName(node, xmlSecNodeSignature, xmlSecDSigNs)) {
@@ -232,10 +232,10 @@ VALUE verify_with(VALUE self, VALUE rb_opts) {
     exception_message = "error occurred during signature verification";
     goto done;
   }
-      
+
   if(dsigCtx->status == xmlSecDSigStatusSucceeded) {
     result = Qtrue;
-  }    
+  }
 
 done:
   if(dsigCtx != NULL) {
