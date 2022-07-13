@@ -10,4 +10,6 @@
 
 typedef int BOOL;
 
+#define Noko_Node_Get_Struct(obj,type,sval) ((sval) = (type*)DATA_PTR(obj))
+
 #endif // NOKOGIRI_EXT_XMLSEC_COMMON_H

@@ -146,7 +146,7 @@ VALUE verify_with(VALUE self, VALUE rb_opts) {
   resetXmlSecError();
 
   Check_Type(rb_opts, T_HASH);
-  Data_Get_Struct(self, xmlNode, node);
+  Noko_Node_Get_Struct(self, xmlNode, node);
 
   // verify start node
   if(!xmlSecCheckNodeName(node, xmlSecNodeSignature, xmlSecDSigNs)) {

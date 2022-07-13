@@ -90,7 +90,7 @@ VALUE sign(VALUE self, VALUE rb_opts) {
     goto done;
   }
 
-  Data_Get_Struct(self, xmlNode, envelopeNode);
+  Noko_Node_Get_Struct(self, xmlNode, envelopeNode);
   doc = envelopeNode->doc;
   // create signature template for enveloped signature.
   signNode = xmlSecTmplSignatureCreate(doc, xmlSecTransformExclC14NId,

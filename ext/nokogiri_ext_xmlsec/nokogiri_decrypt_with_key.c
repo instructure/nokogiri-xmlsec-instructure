@@ -21,7 +21,7 @@ VALUE decrypt_with_key(VALUE self, VALUE rb_key_name, VALUE rb_key) {
 
   Check_Type(rb_key,      T_STRING);
   Check_Type(rb_key_name, T_STRING);
-  Data_Get_Struct(self, xmlNode, node);
+  Noko_Node_Get_Struct(self, xmlNode, node);
   key       = RSTRING_PTR(rb_key);
   keyLength = RSTRING_LEN(rb_key);
   keyName = StringValueCStr(rb_key_name);
