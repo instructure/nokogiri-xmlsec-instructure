@@ -20,6 +20,12 @@
 #include <xmlsec/crypto.h>
 #include <xmlsec/errors.h>
 
+#include <nokogiri.h>
+// Lifted from modern nokogiri.h
+#ifndef Noko_Node_Get_Struct
+  #define Noko_Node_Get_Struct(obj,type,sval) ((sval) = (type*)DATA_PTR(obj))
+#endif
+
 // TODO(awong): Support non-gcc and non-clang compilers.
 #define EXTENSION_EXPORT __attribute__((visibility("default")))
 

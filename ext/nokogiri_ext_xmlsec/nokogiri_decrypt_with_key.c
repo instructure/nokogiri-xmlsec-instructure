@@ -1,11 +1,6 @@
 #include "xmlsecrb.h"
 #include "util.h"
 
-// technically we should include nokogiri.h, but we don't know
-// how to find it. we _know_ this function will exist at runtime
-// though, so just declare it here
-void noko_xml_document_pin_node(xmlNodePtr);
-
 VALUE decrypt_with_key(VALUE self, VALUE rb_key_name, VALUE rb_key) {
   VALUE rb_exception_result = Qnil;
   const char* exception_message = NULL;
@@ -21,7 +16,7 @@ VALUE decrypt_with_key(VALUE self, VALUE rb_key_name, VALUE rb_key) {
 
   Check_Type(rb_key,      T_STRING);
   Check_Type(rb_key_name, T_STRING);
-  Data_Get_Struct(self, xmlNode, node);
+  Noko_Node_Get_Struct(self, xmlNode, node);
   key       = RSTRING_PTR(rb_key);
   keyLength = RSTRING_LEN(rb_key);
   keyName = StringValueCStr(rb_key_name);

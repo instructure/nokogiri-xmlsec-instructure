@@ -1,9 +1,6 @@
 #include "xmlsecrb.h"
 #include "util.h"
 
-// declaration from Nokogiri proper
-VALUE noko_xml_node_wrap(VALUE klass, xmlNodePtr node) ;
-
 VALUE set_id_attribute(VALUE self, VALUE rb_attr_name) {
   VALUE rb_exception_result = Qnil;
   const char* exception_message = NULL;
@@ -17,7 +14,7 @@ VALUE set_id_attribute(VALUE self, VALUE rb_attr_name) {
 
   resetXmlSecError();
 
-  Data_Get_Struct(self, xmlNode, node);
+  Noko_Node_Get_Struct(self, xmlNode, node);
   Check_Type(rb_attr_name, T_STRING);
   idName = StringValueCStr(rb_attr_name);
 
@@ -86,7 +83,7 @@ VALUE get_id(VALUE self, VALUE rb_id)
   xmlDocPtr doc;
 
   Check_Type(rb_id, T_STRING);
-  Data_Get_Struct(self, xmlDoc, doc);
+  Noko_Node_Get_Struct(self, xmlDoc, doc);
   prop = xmlGetID(doc, (const xmlChar *)StringValueCStr(rb_id));
   if (prop) {
     return noko_xml_node_wrap(Qnil, (xmlNodePtr)prop);

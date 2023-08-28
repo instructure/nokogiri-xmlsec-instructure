@@ -53,7 +53,7 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
     goto done;
   }
 
-  Data_Get_Struct(self, xmlNode, node);
+  Noko_Node_Get_Struct(self, xmlNode, node);
   doc = node->doc;
 
   // create encryption template to encrypt XML file and replace 

@@ -1,4 +1,5 @@
 require 'mkmf'
+require 'nokogiri'
 
 def barf message = 'dependencies not met'
   raise message
@@ -22,6 +23,12 @@ puts "Ensure we escaping: #{$CFLAGS}"
   '-DXMLSEC_CRYPTO=\\"openssl\\"'
 end
 
+$CFLAGS << Dir[Gem.loaded_specs['nokogiri'].full_gem_path + "/ext/*"].map { |dir| " -I#{dir}"}.join("")
+
 puts "Clfags: #{$CFLAGS}"
 $libs = `xmlsec1-config  --libs`.strip
+
+# We reference symbols out of nokogiri but don't link directly against it
+$LDFLAGS << ' -Wl,-undefined,dynamic_lookup'
+
 create_makefile('nokogiri_ext_xmlsec')
