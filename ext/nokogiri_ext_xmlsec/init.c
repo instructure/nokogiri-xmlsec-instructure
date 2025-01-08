@@ -47,7 +47,7 @@ void Init_nokogiri_ext_xmlsec() {
   }
   // load crypto
   #ifdef XMLSEC_CRYPTO_DYNAMIC_LOADING
-    if(xmlSecCryptoDLLoadLibrary(BAD_CAST XMLSEC_CRYPTO) < 0) {
+    if(xmlSecCryptoDLLoadLibrary(NULL) < 0) {
       rb_raise(rb_eRuntimeError,
         "Error: unable to load default xmlsec-crypto library. Make sure"
         "that you have it installed and check shared libraries path\n"

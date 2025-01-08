@@ -11,21 +11,9 @@ pkg_config('xmlsec1')
 $CFLAGS << " " + `xmlsec1-config  --cflags`.strip
 $CFLAGS << " -fvisibility=hidden"
 
-if $CFLAGS =~ /\-DXMLSEC_CRYPTO=\\\\\\"openssl\\\\\\"/
-puts "Changing escaping: #{$CFLAGS}"
-  $CFLAGS['-DXMLSEC_CRYPTO=\\\\\\"openssl\\\\\\"'] =
-    '-DXMLSEC_CRYPTO=\\"openssl\\"'
-end
-
-if $CFLAGS =~ /\-DXMLSEC_CRYPTO="openssl"/
-puts "Ensure we escaping: #{$CFLAGS}"
-  $CFLAGS['-DXMLSEC_CRYPTO="openssl"'] =
-  '-DXMLSEC_CRYPTO=\\"openssl\\"'
-end
-
 $CFLAGS << Dir[Gem.loaded_specs['nokogiri'].full_gem_path + "/ext/*"].map { |dir| " -I#{dir}"}.join("")
 
-puts "Clfags: #{$CFLAGS}"
+puts "Cflags: #{$CFLAGS}"
 $libs = `xmlsec1-config  --libs`.strip
 
 # We reference symbols out of nokogiri but don't link directly against it
