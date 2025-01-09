@@ -8,3 +8,9 @@ end
 def fixture(path)
   File.read fixture_path(path)
 end
+
+RSpec.configure do |config|
+  config.after(:each) do
+    GC.compact
+  end
+end
