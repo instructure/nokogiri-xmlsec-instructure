@@ -16,13 +16,13 @@ jobs:
       matrix:
         ruby-version: [3.0, 2.7]
         gemfile: [
-          'gemfiles/nokogiri_12.5.gemfile',
-          'gemfiles/nokogiri_13.10.gemfile',
-          'gemfiles/nokogiri_14.5.gemfile',
-          'gemfiles/nokogiri_15.7.gemfile',
-          'gemfiles/nokogiri_16.8.gemfile',
-          'gemfiles/nokogiri_17.2.gemfile',
-          'gemfiles/nokogiri_18.8.gemfile',
+          'gemfiles/nokogiri_1.12.gemfile',
+          'gemfiles/nokogiri_1.13.gemfile',
+          'gemfiles/nokogiri_1.14.gemfile',
+          'gemfiles/nokogiri_1.15.gemfile',
+          'gemfiles/nokogiri_1.16.gemfile',
+          'gemfiles/nokogiri_1.17.gemfile',
+          'gemfiles/nokogiri_1.18.gemfile',
         ]
 
     steps:
