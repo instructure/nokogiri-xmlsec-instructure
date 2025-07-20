@@ -30,13 +30,21 @@ jobs:
           - gemfile: 'gemfiles/nokogiri_1.17.gemfile' # requires ruby >= 3.0.0
             ruby-version: 2.7
           - gemfile: 'gemfiles/nokogiri_1.18.gemfile' # requires ruby >= 3.1.0
-            ruby-version: [2.7, 3.0]
+            ruby-version: 2.7
+          - gemfile: 'gemfiles/nokogiri_1.18.gemfile' # requires ruby >= 3.1.0
+            ruby-version: 3.0
+          - gemfile: 'gemfiles/nokogiri_1.17.gemfile' # not supported combination
+            ruby-version: 3.1
+          - gemfile: 'gemfiles/nokogiri_1.13.gemfile' # not supported combination
+            ruby-version: 3.2
+          - gemfile: 'gemfiles/nokogiri_1.16.gemfile' # not supported combination
+            ruby-version: 3.2
 
     steps:
       - name: Install libxmlsec
         run: |
           sudo apt-get update
-          sudo apt-get install -y libxmlsec1-dev
+          sudo apt-get install -y libxmlsec1-dev libxmlsec1-nss-dev
       - uses: actions/checkout@v3
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
