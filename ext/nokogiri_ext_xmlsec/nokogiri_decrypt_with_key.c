@@ -39,6 +39,11 @@ VALUE decrypt_with_key(VALUE self, VALUE rb_key_name, VALUE rb_key) {
   // don't let xmlsec free the node we're looking at out from under us
   encCtx->flags |= XMLSEC_ENC_RETURN_REPLACED_NODE;
 
+  #ifdef XMLSEC_KEYINFO_FLAGS_LAX_KEY_SEARCH
+    // Enable lax key search, since xmlsec 1.3.0
+    encCtx->keyInfoReadCtx.flags |= XMLSEC_KEYINFO_FLAGS_LAX_KEY_SEARCH;
+  #endif
+
   // decrypt the data
   if((xmlSecEncCtxDecrypt(encCtx, node) < 0) || (encCtx->result == NULL)) {
     rb_exception_result = rb_eDecryptionError;
