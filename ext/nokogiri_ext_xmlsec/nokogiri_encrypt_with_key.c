@@ -115,6 +115,11 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
     goto done;
   }
 
+  #ifdef XMLSEC_KEYINFO_FLAGS_LAX_KEY_SEARCH
+    // Enable lax key search, since xmlsec 1.3.0
+    encCtx->keyInfoWriteCtx.flags |= XMLSEC_KEYINFO_FLAGS_LAX_KEY_SEARCH;
+  #endif
+
   // Generate the symmetric key.
   encCtx->encKey = xmlSecKeyGenerateByName(BAD_CAST options.key_type, options.key_bits,
                                            xmlSecKeyDataTypeSession);
