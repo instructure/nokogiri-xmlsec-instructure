@@ -1,8 +1,10 @@
-require 'rspec'
-require 'xmlsec'
+# frozen_string_literal: true
+
+require "rspec"
+require "xmlsec"
 
 def fixture_path(filename)
-  File.join(File.expand_path('../fixtures', __FILE__), filename)
+  File.join(File.expand_path("fixtures", __dir__), filename)
 end
 
 def fixture(path)

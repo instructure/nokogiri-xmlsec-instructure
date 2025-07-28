@@ -7,34 +7,43 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
-
+  rubocop:
     runs-on: ubuntu-latest
+    env:
+      BUNDLE_LOCKFILE: Gemfile.lock
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4
+          bundler-cache: true
+      - name: RuboCop
+        run: bin/rubocop
 
+  rspec:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: [3.0, 2.7]
-        gemfile: ['gemfiles/nokogiri_13.10.gemfile', 'gemfiles/nokogiri_12.5.gemfile']
-
+        ruby-version: [3.4, 3.3, 3.2]
+        lockfile:
+          - Gemfile.lock # 1.18
+          - nokogiri-1.17
+          - nokogiri-1.16
+          - nokogiri-1.15
+          - nokogiri-1.14
+          - nokogiri-1.13
+    env:
+      BUNDLE_LOCKFILE: ${{ matrix.lockfile }}
     steps:
-      - name: Install libxmlsec
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libxmlsec1-dev
+      - uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: libxmlsec1-dev
       - uses: actions/checkout@v3
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
-        env:
-          BUNDLE_GEMFILE: ${{ matrix.gemfile }}
-      - name: Install dependencies
-        run: bundle install
-        env:
-          BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       - name: Run tests
-        run: bundle exec rake
-        env:
-          BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+        run: bin/rake
