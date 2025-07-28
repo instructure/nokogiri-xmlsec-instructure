@@ -20,7 +20,7 @@ Install this before attempting to install; or else it may fail (tested on CentOS
 
 Add this line to your application's Gemfile:
 
-    gem 'nokogiri-xmlsec'
+    gem 'nokogiri-xmlsec-instructure', '~> 0.11.0'
 
 And then execute:
 
