@@ -30,7 +30,9 @@ xmlSecTransformId GetSignatureMethod(VALUE rb_method,
                                      VALUE* rb_exception_result,
                                      const char** exception_message);
 xmlSecTransformId GetDigestMethod(VALUE rb_digest_method,
-                                  VALUE* rb_exception_result,
-                                  const char** exception_message);
-
-#endif  // NOKOGIRI_EXT_XMLSEC_OPTIONS_H
+                                  VALUE *rb_exception_result,
+                                  const char **exception_message);
+xmlSecTransformId GetCanonicalizationMethod(VALUE rb_canonicalization_method,
+                                            VALUE *rb_exception_result,
+                                            const char **exception_message);
+#endif // NOKOGIRI_EXT_XMLSEC_OPTIONS_H

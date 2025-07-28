@@ -14,6 +14,9 @@
 //             taken from http://www.w3.org/TR/xmldsig-core
 //   :digest_alg - Algorithm identified by the URL fragment. Supported algorithms
 //             taken from http://www.w3.org/TR/xmldsig-core
+//  :canon_alg - Algorithm identified by the URL fragment. Supported algorithms
+//             taken from http://www.w3.org/TR/xmldsig-core/#sec-c14nAlg
+//             Default is ExclC14N (exclusive canonicalization).
 //   :name - [optional] String with name of the rsa key.
 //   :uri - [optional] The URI attribute for the <Reference> node in the
 //          signature.
@@ -45,6 +48,7 @@ VALUE sign(VALUE self, VALUE rb_opts) {
   VALUE rb_cert = rb_hash_aref(rb_opts, ID2SYM(rb_intern("cert")));
   VALUE rb_signature_alg = rb_hash_aref(rb_opts, ID2SYM(rb_intern("signature_alg")));
   VALUE rb_digest_alg = rb_hash_aref(rb_opts, ID2SYM(rb_intern("digest_alg")));
+  VALUE rb_canon_alg = rb_hash_aref(rb_opts, ID2SYM(rb_intern("canon_alg")));
   VALUE rb_uri = rb_hash_aref(rb_opts, ID2SYM(rb_intern("uri")));
   VALUE rb_key_name = rb_hash_aref(rb_opts, ID2SYM(rb_intern("name")));
   VALUE rb_store_references = rb_hash_aref(rb_opts, ID2SYM(rb_intern("store_references")));
@@ -71,6 +75,9 @@ VALUE sign(VALUE self, VALUE rb_opts) {
     Check_Type(rb_uri, T_STRING);
     refUri = StringValueCStr(rb_uri);
   }
+  if (!NIL_P(rb_canon_alg)){
+    Check_Type(rb_canon_alg, T_STRING);
+  }
   switch (TYPE(rb_store_references)) {
     case T_TRUE:
       store_references = 1;
@@ -83,6 +90,15 @@ VALUE sign(VALUE self, VALUE rb_opts) {
       break;
   }
 
+  xmlSecTransformId canon_algorithm = xmlSecTransformExclC14NId; // default
+  if (!NIL_P(rb_canon_alg)){
+    canon_algorithm = GetCanonicalizationMethod(rb_canon_alg,
+                                                &rb_exception_result, &exception_message);
+    if (canon_algorithm == xmlSecTransformIdUnknown){
+      goto done;
+    }
+  }
+
   xmlSecTransformId signature_algorithm = GetSignatureMethod(rb_signature_alg,
       &rb_exception_result, &exception_message);
   if (signature_algorithm == xmlSecTransformIdUnknown) {
@@ -93,7 +109,7 @@ VALUE sign(VALUE self, VALUE rb_opts) {
   Noko_Node_Get_Struct(self, xmlNode, envelopeNode);
   doc = envelopeNode->doc;
   // create signature template for enveloped signature.
-  signNode = xmlSecTmplSignatureCreate(doc, xmlSecTransformExclC14NId,
+  signNode = xmlSecTmplSignatureCreate(doc, canon_algorithm,
                                        signature_algorithm, NULL);
   if (signNode == NULL) {
     rb_exception_result = rb_eSigningError;
@@ -111,6 +127,7 @@ VALUE sign(VALUE self, VALUE rb_opts) {
     // Propagate exception.
     goto done;
   }
+
   refNode = xmlSecTmplSignatureAddReference(signNode, digest_algorithm,
                                             NULL, (const xmlChar *)refUri, NULL);
   if(refNode == NULL) {
@@ -126,7 +143,7 @@ VALUE sign(VALUE self, VALUE rb_opts) {
     goto done;
   }
 
-  if(xmlSecTmplReferenceAddTransform(refNode, xmlSecTransformExclC14NId) == NULL) {
+  if(xmlSecTmplReferenceAddTransform(refNode, canon_algorithm) == NULL){
     rb_exception_result = rb_eSigningError;
     exception_message = "failed to add canonicalization transform to reference";
     goto done;

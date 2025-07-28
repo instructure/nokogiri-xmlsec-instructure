@@ -44,6 +44,13 @@ static const char DIGEST_SHA256[] = "sha256";
 static const char DIGEST_SHA384[] = "sha384";
 static const char DIGEST_SHA512[] = "sha512";
 
+// Canonicalization algorithms
+// http://www.w3.org/TR/xmldsig-core1/#sec-Canonicalization
+static const char C14N[] = "c14n";
+static const char C14N_WITH_COMMENTS[] = "c14n-with-comments";
+static const char EXCL_C14N[] = "exc-c14n";
+static const char EXCL_C14N_WITH_COMMENTS[] = "exc-c14n-with-comments";
+
 BOOL GetXmlEncOptions(VALUE rb_opts,
                       XmlEncOptions* options,
                       VALUE* rb_exception_result,
@@ -162,5 +169,26 @@ xmlSecTransformId GetDigestMethod(VALUE rb_digest_alg,
 
   *rb_exception_result = rb_eArgError;
   *exception_message = "Unknown :digest_algorithm";
+  return xmlSecTransformIdUnknown;
+}
+
+xmlSecTransformId GetCanonicalizationMethod(VALUE rb_canon_alg,
+                                            VALUE *rb_exception_result,
+                                            const char **exception_message){
+  const char *canonAlgorithm = RSTRING_PTR(rb_canon_alg);
+  unsigned int canonAlgorithmLength = RSTRING_LEN(rb_canon_alg);
+
+  if (strncmp(C14N, canonAlgorithm, canonAlgorithmLength) == 0){
+    return xmlSecTransformInclC14NId;
+  }else if (strncmp(C14N_WITH_COMMENTS, canonAlgorithm, canonAlgorithmLength) == 0){
+    return xmlSecTransformInclC14NWithCommentsId;
+  }else if (strncmp(EXCL_C14N, canonAlgorithm, canonAlgorithmLength) == 0){
+    return xmlSecTransformExclC14NId;
+  } else if (strncmp(EXCL_C14N_WITH_COMMENTS, canonAlgorithm, canonAlgorithmLength) == 0){
+    return xmlSecTransformExclC14NWithCommentsId;
+  }
+
+  *rb_exception_result = rb_eArgError;
+  *exception_message = "Unknown :canon_alg";
   return xmlSecTransformIdUnknown;
 }

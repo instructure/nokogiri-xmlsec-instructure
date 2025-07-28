@@ -93,6 +93,25 @@ verify signatures like so:
     # Verify with installed CA certificates
     doc.verify_signature
 
+### Customize canonization method:
+
+```
+doc.sign!(
+  cert: 'certificate data',
+  key: 'private key data',
+  name: 'private key name',
+  digest_alg: 'sha256',
+  signature_alg: 'rsa-sha256',
+  canon_alg: 'c14n',
+)
+```
+
+By default, the lib defaults to : `xmlSecTransformExclC14NId` - `<CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>`
+
+If in some scenarios you need a different canonization method e.g.`xmlSecTransformInclC14NId` - `<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>` pass it with the `canon_alg`
+
+If none is specified the lib will resolve to default `xmlSecTransformExclC14NId` .
+
 ### Encryption & Decryption
 
 Encrypted documents can only be decrypted with the private key that corresponds
