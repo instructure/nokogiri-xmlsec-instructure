@@ -11,10 +11,10 @@ to `Nokogiri::XML::Document`.
 ## Installation
 
 Install this before attempting to install; or else it may fail (tested on CentOS 7) while trying to find -lltdl from the xmlsec1-openssl lib. I'm guessing it's a dependency. Someone else may know more.
-    
+
     # CentOS/RHEL
     yum install libtool-ltdl-devel
-    
+
     # Debian/Ubuntu
     apt install -y libxmlsec1-dev
 
@@ -93,7 +93,7 @@ verify signatures like so:
     # Verify with installed CA certificates
     doc.verify_signature
 
-### Customize canonization method:
+### Customize Canonicalization method:
 
 ```
 doc.sign!(
@@ -108,7 +108,7 @@ doc.sign!(
 
 By default, the lib defaults to : `xmlSecTransformExclC14NId` - `<CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>`
 
-If in some scenarios you need a different canonization method e.g.`xmlSecTransformInclC14NId` - `<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>` pass it with the `canon_alg`
+If in some scenarios you need a different Canonicalization method e.g.`xmlSecTransformInclC14NId` - `<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>` pass it with the `canon_alg`
 
 If none is specified the lib will resolve to default `xmlSecTransformExclC14NId` .
 
@@ -130,7 +130,6 @@ To encrypt a document, use a public key:
 To decrypt a document, use a private key:
 
     doc.decrypt! key: 'private key content'
-
 
 ## Limitations and Known Issues
 
