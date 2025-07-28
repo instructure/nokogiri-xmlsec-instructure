@@ -1,22 +1,14 @@
-require 'mkmf'
-require 'nokogiri'
+# frozen_string_literal: true
 
-def barf message = 'dependencies not met'
-  raise message
-end
+require "mkmf"
+require "nokogiri"
 
-barf unless have_header('ruby.h')
+abort unless pkg_config("xmlsec1")
+append_cflags("-fvisibility=hidden")
 
-pkg_config('xmlsec1')
-$CFLAGS << " " + `xmlsec1-config  --cflags`.strip
-$CFLAGS << " -fvisibility=hidden"
-
-$CFLAGS << Dir[Gem.loaded_specs['nokogiri'].full_gem_path + "/ext/*"].map { |dir| " -I#{dir}"}.join("")
-
-puts "Cflags: #{$CFLAGS}"
-$libs = `xmlsec1-config  --libs`.strip
+abort unless find_header("nokogiri.h", *Dir["#{Gem.loaded_specs["nokogiri"].full_gem_path}/ext/*"])
 
 # We reference symbols out of nokogiri but don't link directly against it
-$LDFLAGS << ' -Wl,-undefined,dynamic_lookup'
+append_ldflags(["-Wl", "-undefined,dynamic_lookup"])
 
-create_makefile('nokogiri_ext_xmlsec')
+create_makefile("nokogiri_ext_xmlsec")
