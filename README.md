@@ -20,7 +20,7 @@ Install this before attempting to install; or else it may fail (tested on CentOS
 
 Add this line to your application's Gemfile:
 
-    gem 'nokogiri-xmlsec'
+    gem 'nokogiri-xmlsec-instructure'
 
 And then execute:
 
@@ -28,7 +28,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install nokogiri-xmlsec
+    $ gem install nokogiri-xmlsec-instructure
 
 ## Usage
 
@@ -93,7 +93,7 @@ verify signatures like so:
     # Verify with installed CA certificates
     doc.verify_signature
 
-### Customize canonization method:
+### Customize Canonicalization method:
 
 ```
 doc.sign!(
@@ -108,7 +108,7 @@ doc.sign!(
 
 By default, the lib defaults to : `xmlSecTransformExclC14NId` - `<CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>`
 
-If in some scenarios you need a different canonization method e.g.`xmlSecTransformInclC14NId` - `<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>` pass it with the `canon_alg`
+If in some scenarios you need a different canonicalization method e.g.`xmlSecTransformInclC14NId` - `<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>` pass it with the `canon_alg`
 
 If none is specified the lib will resolve to default `xmlSecTransformExclC14NId` .
 
