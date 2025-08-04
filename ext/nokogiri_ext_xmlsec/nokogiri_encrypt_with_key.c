@@ -142,6 +142,10 @@ VALUE encrypt_with_key(VALUE self, VALUE rb_rsa_key_name, VALUE rb_rsa_key,
     }
   }
 
+  // We don't want xmlsec to free the node we're looking at out from under us,
+  // since it's still referenced from a Ruby object.
+  encCtx->flags |= XMLSEC_ENC_RETURN_REPLACED_NODE;
+
   // Set key name.
   if(keyName) {
     if(xmlSecKeySetName(encCtx->encKey, (xmlSecByte *)keyName) < 0) {
@@ -185,6 +189,14 @@ done:
 
   /* cleanup */
   if(encCtx != NULL) {
+    // the replaced node is orphaned, but not freed; let Nokogiri
+    // own it now
+    if (encCtx->replacedNodeList != NULL) {
+      noko_xml_document_pin_node(encCtx->replacedNodeList);
+      // no really, please don't free it
+      encCtx->replacedNodeList = NULL;
+    }
+
     xmlSecEncCtxDestroy(encCtx);
   }
 
