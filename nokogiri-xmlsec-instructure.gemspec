@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
   spec.metadata["rubygems_mfa_required"] = "true"
 
-  spec.files = Dir["{exe,lib}/**/*"]
+  spec.files = Dir["{exe,ext,lib}/**/*.{c,h,rb}"]
   spec.extensions = %w[ext/nokogiri_ext_xmlsec/extconf.rb]
 
   spec.required_ruby_version = ">= 3.2"
