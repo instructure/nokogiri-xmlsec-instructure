@@ -5,7 +5,7 @@ describe "encryption and decryption" do # rubocop:disable RSpec/DescribeClass
     Nokogiri::XML(fixture("sign2-doc.xml"))
   end
 
-  %w[aes128-cbc aes192-cbc aes256-cbc tripledes-cbc].each do |block_encryption|
+  %w[aes128-cbc aes192-cbc aes256-cbc aes128-gcm aes192-gcm aes256-gcm tripledes-cbc].each do |block_encryption|
     %w[rsa-1_5 rsa-oaep-mgf1p].each do |key_transport| # rubocop:disable Performance/CollectionLiteralInLoop
       describe "encrypting with an RSA public key with #{block_encryption} #{key_transport}" do
         let(:original) { subject.to_s }

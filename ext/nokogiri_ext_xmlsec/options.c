@@ -15,8 +15,11 @@ static const char RSA_OAEP_MGF1P[] = "rsa-oaep-mgf1p";
 // Block Encryption Strings.
 static const char TRIPLEDES_CBC[] = "tripledes-cbc";
 static const char AES128_CBC[] = "aes128-cbc";
-static const char AES256_CBC[] = "aes256-cbc";
 static const char AES192_CBC[] = "aes192-cbc";
+static const char AES256_CBC[] = "aes256-cbc";
+static const char GCM128_CBC[] = "aes128-gcm";
+static const char GCM192_CBC[] = "aes192-gcm";
+static const char GCM256_CBC[] = "aes256-gcm";
 
 // Supported signature algorithms taken from #6 of
 // http://www.w3.org/TR/xmldsig-core1/
@@ -88,6 +91,18 @@ BOOL GetXmlEncOptions(VALUE rb_opts,
   } else if (strncmp(TRIPLEDES_CBC, blockEncryptionValue, blockEncryptionLen) == 0) {
     options->block_encryption = xmlSecTransformDes3CbcId;
     options->key_type = "des";
+    options->key_bits = 192;
+  } else if (strncmp(GCM256_CBC, blockEncryptionValue, blockEncryptionLen) == 0) {
+    options->block_encryption = xmlSecTransformAes256GcmId;
+    options->key_type = "aes";
+    options->key_bits = 256;
+  } else if (strncmp(GCM128_CBC, blockEncryptionValue, blockEncryptionLen) == 0) {
+    options->block_encryption = xmlSecTransformAes128GcmId;
+    options->key_type = "aes";
+    options->key_bits = 128;
+  } else if (strncmp(GCM192_CBC, blockEncryptionValue, blockEncryptionLen) == 0) {
+    options->block_encryption = xmlSecTransformAes192GcmId;
+    options->key_type = "aes";
     options->key_bits = 192;
   } else {
     *rb_exception_result = rb_eArgError;
